@@ -1,0 +1,27 @@
+# Jaeyong Park
+# python-VO img
+# version : 1.01
+
+# changed : add python3
+
+# base image
+FROM nvidia/cuda:11.4.2-base-ubuntu18.04
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+ENV PATH /opt/conda/bin:$PATH
+ENV PATH /opt/conda/bin:$PATH
+
+# install Miniconda
+RUN apt-get update && \
+apt-get install -y wget bzip2 curl git build-essential
+
+RUN curl -sSL https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o /tmp/miniconda.sh \
+    && bash /tmp/miniconda.sh -bfp /usr/local \
+    && rm -rf /tmp/miniconda.sh \
+    && conda install -y python=3.8.0 \
+    && conda update conda \
+    && apt-get -qq -y autoremove \
+    && apt-get autoclean \
+    && rm -rf /var/lib/apt/lists/* /var/log/dpkg.log \
+    && conda clean --all --yes
+
+

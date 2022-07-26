@@ -1,0 +1,7 @@
+# Jaeyong Park
+# python-VO img
+# version : 1.0
+
+# base image
+FROM nvidia/cuda:11.4.2-base-ubuntu18.04
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8

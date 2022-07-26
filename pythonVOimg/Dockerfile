@@ -1,0 +1,42 @@
+# Jaeyong Park
+# python-VO img
+# version : 1.2.0
+
+# changed : installed pytorch
+
+# base image
+FROM nvidia/cuda:11.4.2-base-ubuntu18.04
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+ENV PATH /opt/conda/bin:$PATH
+ENV PATH /usr/local/cuda-11.0/bin:$PATH 
+ENV LD_LIBRARY_PATH="/usr/local/cuda-11.0/lib64:$LD_LIBRARY_PATH"
+#ENV PATH /home/usrg/.local/bin:$PATH
+
+# install Miniconda
+RUN apt-get update && \
+apt-get install -y apt-utils wget bzip2 curl git build-essential pkg-config \
+	python-pip
+
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+    /bin/bash ~/miniconda.sh -b -p /opt/conda && \
+    rm ~/miniconda.sh && \
+    /opt/conda/bin/conda clean -tipsy && \
+    ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
+	conda create -n usrg && \
+    echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
+    echo "conda activate usrg" >> ~/.bashrc
+
+# instal prerequistics for pythonVO
+RUN conda install python=3.8.0
+COPY requirements.txt requirements.txt
+RUN pip install numpy==1.18.5 matplotlib==3.5.2 PyYAML==6.0 tqdm~=4.47.0
+RUN python -V
+
+#install opencv
+RUN pip install --upgrade setuptools pip wheel
+RUN python -V
+RUN pip install opencv-python==4.4.0.40
+
+
+# install pytorch
+RUN pip --default-timeout=300 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113

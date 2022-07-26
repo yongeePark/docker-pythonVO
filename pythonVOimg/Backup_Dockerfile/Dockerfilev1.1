@@ -1,0 +1,75 @@
+# Jaeyong Park
+# python-VO img
+# version : 1.1
+
+# changed : install requirements.txt for pytorch
+
+# base image
+FROM nvidia/cuda:11.4.2-base-ubuntu18.04
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+ENV PATH /opt/conda/bin:$PATH
+ENV PATH /home/usrg/.local/bin:$PATH
+
+# install Miniconda
+RUN apt-get update && \
+apt-get install -y apt-utils wget bzip2 curl git build-essential pkg-config \
+	python-pip
+
+#RUN curl -sSL https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o /tmp/#miniconda.sh \
+#    && bash /tmp/miniconda.sh -bfp /usr/local \
+#    && rm -rf /tmp/miniconda.sh \
+#    && conda install -y python=3.8.0 \
+#    && conda update conda \
+#    && apt-get -qq -y autoremove \
+#    && apt-get autoclean \
+#    && rm -rf /var/lib/apt/lists/* /var/log/dpkg.log \
+#    && conda clean --all --yes
+
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+    /bin/bash ~/miniconda.sh -b -p /opt/conda && \
+    rm ~/miniconda.sh && \
+    /opt/conda/bin/conda clean -tipsy && \
+    ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
+	conda create -n usrg && \
+    echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
+    echo "conda activate usrg" >> ~/.bashrc
+
+RUN /bin/bash -c "pip install numpy"
+COPY requirements.txt requirements.txt
+RUN /bin/bash -c "pip install matplotlib"
+RUN pip list | grep matplotlib
+#RUN /bin/bash -c "pip install --user -r requirements.txt"
+
+# create a user
+#RUN useradd -d usrg
+#RUN useradd --user-group --system --create-home --no-log-init usrg
+
+#ENV DEBIAN_FRONTEND noninteractive
+
+#RUN add-apt-repository universe
+#RUN apt-get update
+#RUN apt-get install -y python-pip
+#RUN apt-get install -y python3.8-dev cmake
+
+#RUN apt remove python3-pip
+
+#RUN python3.8 -m easy_install pip
+
+#RUN useradd -ms /bin/bash usrg
+#USER usrg
+#WORKDIR /home/usrg
+
+
+
+#RUN pip install --upgrade setuptools pip ez_setup
+#COPY --chown=usrg:usrg requirements.txt requirements.txt
+#RUN	pip3 install --user -r requirements.txt
+#RUN python -V
+#RUN pip --version
+
+#RUN pip install numpy==1.18.3 
+
+#RUN	pip install matplotlib==2.1.1
+
+#RUN /bin/bash -c "conda init bash && conda activate usrg && pip install numpy==1.18.3"
+
